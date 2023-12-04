@@ -52,8 +52,16 @@ describe Board do
       expect(board.is_colliding?(shape)).to eq(false)
 
       # The shape may be outside of the board but the collision must be false and no error should be raised
-      shape = Shape.new(Vector.new(30, 30), shape_layout)
+      shape = Shape.new(Vector.new(30, 10), shape_layout)
       expect(board.is_colliding?(shape)).to eq(false)
+
+      # Shape above the ground - no collision
+      shape = Shape.new(Vector.new(0, 24), shape_layout)
+      expect(board.is_colliding?(shape)).to eq(false)
+
+      # Ground collision detection - shape colliding or under the board is considered as collision
+      shape = Shape.new(Vector.new(0, 25), shape_layout)
+      expect(board.is_colliding?(shape)).to eq(true)
     end
 
     # TODO: test when roration is involved
