@@ -24,10 +24,10 @@ class Board
     rotated_shape = shape.rotate
 
     # Check if the rotated shape is not colliding with the board
-    is_colliding?(rotated_shape) == false
+    !is_out_off_board(shape) && !is_colliding?(rotated_shape)
   end
 
-  def can_move(shape, direction)
+  def can_move?(shape, direction)
     # Simulate the movement
     moved_shape = shape.move(direction)
 
@@ -45,7 +45,12 @@ class Board
           y = shape.position.y + row_index
 
           # Return true if the cell exists and is occupied
-          return true if check_cell(x, y) and @board[y][x] == 1
+          cell_collision = (check_cell(x, y) and @board[y][x] == 1)
+
+          # Check ground collision - collision with the bottom of the board is also considered as collision
+          ground_collision = (y >= @height)
+
+          return true if cell_collision or ground_collision
         end
       end
     end
@@ -72,6 +77,22 @@ class Board
 
     # Return false if the shape is inside the board
     false
+  end
+
+  def add_shape(shape)
+    shape.layout.each_with_index do |row, row_index|
+      row.each_with_index do |cell, column_index|
+        # check if the cell is occupied
+        if cell != 0
+          # Get the absolute position of the cell in the board
+          x = shape.position.x + column_index
+          y = shape.position.y + row_index
+
+          # Set the cell to occupied
+          set_cell(x, y, 1)
+        end
+      end
+    end
   end
 
   def get_cell(x, y)

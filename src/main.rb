@@ -2,56 +2,41 @@ require 'curses'
 require_relative 'shape'
 require_relative 'direction'
 require_relative 'board'
+require_relative 'configuration'
+require_relative 'timer'
 
 include Curses
 
 class Tetris
-  def initialize
 
-    board_size = Vector.new(20, 25)
-    screen_size = board_size + Vector.new(2, 2)
-
-    @board = Board.new(board_size.x, board_size.y, [
-      Vector.new(0, 0),
-      Vector.new(1, 0),
-      Vector.new(0, 1),
-
-      Vector.new(18, 0),
-      Vector.new(19, 0),
-      Vector.new(19, 1),
-
-      Vector.new(5, 4),
-      Vector.new(4, 5),
-      Vector.new(5, 5),
-      Vector.new(6, 5),
-      Vector.new(5, 6)
-    ])
-
+  def init_curses(screen_size)
     Curses.init_screen
     Curses.curs_set(0) # Hide the cursor
-    #@win = Curses.stdscr
-    @win = Curses::Window.new(screen_size.y, screen_size.x, 0, 0)
+    @win = Curses::Window.new(screen_size.y, screen_size.x, 0, 0) # height comes first
     @win.timeout = 100 # Set a timeout for getch in milliseconds
     @win.box('|', '-')
     @win.addstr('Tetris')
     @win.refresh
-    return
+  end
 
-    Curses.noecho
-    Curses.cbreak
-    @win = Curses::Window.new(Curses.lines, Curses.cols, 0, 0)
-    @win.keypad = true
-    @win.timeout = 100
-    @win.nodelay = true
-    @win.box('|', '-')
-    @win.setpos(0, 2)
-    @win.addstr('Tetris')
-    @win.refresh
+  def initialize
+
+    board_size = Vector.new(Configuration::BOARD_WIDTH, Configuration::BOARD_HEIGHT)
+    screen_size = board_size + Vector.new(2, 2)
+
+    @speed = Configuration::INITIAL_SPEED
+    @timer = Timer.new(@speed)
+
+    @board = Board.new(board_size.x, board_size.y)
+
+    init_curses(screen_size)
   end
 
   def run
-    shape = Shape.new(Vector.new(0, 0), [[1, 1, 1, 1]])
+    @shape = Shape.new(Vector.new(5, 0), [[1, 1, 1, 1]])
     # shape = Shape.new(Vector.new(5, 5), [[1, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]])
+
+    @timer.start
 
     loop do
       @win.clear
@@ -59,51 +44,99 @@ class Tetris
       @win.box('|', '-')
       @win.addstr('Tetris')
 
-      #draw the board
+      # draw the board
       @board.height.times do |y|
         @board.width.times do |x|
           if @board.cell_occupied?(x, y)
             @win.setpos(y + 1, x + 1)
-            @win.addch('O')
+            @win.addch(Configuration::RENDER_CHARACTER)
           end
-
-          #@win.setpos(y + 1, x + 1)
-          #@win.addch(@board.get_cell(x, y) == 1 ? 'O' : ' ')
         end
       end
 
       # draw the shape
-      shape.layout.each_with_index do |row, row_index|
+      @shape.layout.each_with_index do |row, row_index|
         row.each_with_index do |cell, column_index|
           # check if the cell is occupied
           if cell != 0
             # Get the absolute position of the cell in the board
-            x = shape.position.x + column_index
-            y = shape.position.y + row_index
+            x = @shape.position.x + column_index
+            y = @shape.position.y + row_index
 
             @win.setpos(y + 1, x + 1) # Corrected order of arguments
-            @win.addch('O')
+            @win.addch(Configuration::RENDER_CHARACTER)
           end
         end
       end
 
+      #print_debug
+
+      shape_fall(@shape)
+
       case @win.getch
       when 'w'
-        shape.move!(Direction::TOP)
+        #move_shape(Direction::TOP)
+        rotate_shape
       when 's'
-        shape.move!(Direction::BOTTOM)
+        move_shape(Direction::BOTTOM)
       when 'a'
-        shape.move!(Direction::LEFT)
+        move_shape(Direction::LEFT)
       when 'd'
-        shape.move!(Direction::RIGHT)
+        move_shape(Direction::RIGHT)
       when 'r'
-        shape.rotate!
+        rotate_shape
       when 'q'
         break
       end
     end
 
     Curses.close_screen
+  end
+
+  def move_shape( direction)
+    if @board.can_move?(@shape, direction)
+      @shape.move!(direction)
+    end
+  end
+
+  def rotate_shape
+    if @board.can_rotate?(@shape)
+      @shape.rotate!
+    end
+  end
+
+  def shape_fall(shape)
+    if @timer.tick?
+      @timer.update_wait_time(@speed)
+      @timer.reset
+
+      moved_shape = shape.move(Direction::BOTTOM)
+      if @board.is_colliding?(moved_shape)
+        @board.add_shape(shape)
+        spawn_shape
+      else
+        shape.move!(Direction::BOTTOM)
+      end
+    end
+  end
+
+  def spawn_shape()
+    @shape = Shape.random_shape(Vector.new(10, 0))
+    if @board.is_colliding?(@shape)
+      # game over
+      @win.setpos(10, 1)
+      @win.addstr("Game Over")
+    end
+  end
+
+  def print_debug
+    @win.setpos(15, 1)
+    @win.addstr("Speed: #{@speed}")
+    @win.setpos(17, 1)
+    @win.addstr(@timer.elapsed_time.to_s)
+
+    @win.setpos(1, 25)
+    @win.addstr("Shape position")
   end
 end
 
