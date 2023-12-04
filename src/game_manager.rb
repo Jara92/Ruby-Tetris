@@ -14,12 +14,15 @@ class GameManager
     @timer = Timer.new(@speed)
 
     @exit = false
+    @paused = false
 
     spawn_shape
   end
 
   def update
-    shape_fall
+    if not @paused
+      shape_fall
+    end
   end
 
   def start
@@ -34,17 +37,31 @@ class GameManager
     @exit = true
   end
 
+  def toggle_pause
+    @paused = !@paused
+  end
+
+  def paused?
+    @paused
+  end
+
   def move_shape( direction)
+    return if @paused
+
     if @board.can_move?(@shape, direction)
       @shape.move!(direction)
     end
   end
 
   def rotate_shape
+    return if @paused
+
     if @board.can_rotate?(@shape)
       @shape.rotate!
     end
   end
+
+  private
 
   def shape_fall
     if @timer.tick?
@@ -61,7 +78,6 @@ class GameManager
     end
   end
 
-  private
   def spawn_shape()
     @shape = Shape.random_shape(Vector.new(@board.width / 2, 0))
 

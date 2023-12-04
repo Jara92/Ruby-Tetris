@@ -14,11 +14,36 @@ class Tetris
     @win.timeout = 100 # Set a timeout for getch in milliseconds
     @win.box('|', '-')
     @win.addstr(Configuration::TITLE)
+
+    init_colors
+
     @win.refresh
   end
 
   def close_curses
     Curses.close_screen
+  end
+
+  def init_colors()
+    Curses.start_color
+    @colors = {}
+
+    # For each definition create color pair with index as id
+    [
+      [:white_black, Curses::COLOR_WHITE, Curses::COLOR_BLACK],
+      [:red_black, Curses::COLOR_RED, Curses::COLOR_BLACK],
+      [:green_black, Curses::COLOR_GREEN, Curses::COLOR_BLACK],
+    ].each_with_index do |(name, fg, bg), index|
+      id = index + 1
+      Curses.init_pair(id, fg, bg)
+      @colors[name] = id
+    end
+  end
+
+  def change_color(name)
+    raise "Color #{name} not defined" unless @colors[name]
+
+    @win.color_set(@colors[name])
   end
 
   def initialize
@@ -43,6 +68,14 @@ class Tetris
 
       render_board(@game_manager.board)
       render_shape(@game_manager.shape)
+
+      if @game_manager.paused?
+        change_color(:red_black)
+        @win.setpos(@game_manager.board.height / 2, @game_manager.board.width / 2 - 2)
+        @win.addstr("PAUSED")
+        change_color(:white_black)
+      end
+
       #render_debug
     end
 
@@ -62,6 +95,8 @@ class Tetris
       @game_manager.move_shape(Direction::RIGHT)
     when 'r'
       @game_manager.rotate_shape
+    when 'p'
+      @game_manager.toggle_pause
     when 'q'
       @game_manager.exit
     else
