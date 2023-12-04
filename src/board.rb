@@ -95,6 +95,31 @@ class Board
     end
   end
 
+  def get_row(row_index)
+    raise TypeError if not row_index.is_a?(Integer)
+    raise IndexError if not (0...@height).include?(row_index)
+
+    @board[row_index].clone
+  end
+
+  def is_row_full?(row_index)
+    raise TypeError unless row_index.is_a?(Integer)
+    raise IndexError unless (0...@height).include?(row_index)
+
+    @board[row_index].all? { |cell| cell != 0 }
+  end
+
+  def squash_row(row_index)
+    raise TypeError unless row_index.is_a?(Integer)
+    raise IndexError unless (0...@height).include?(row_index)
+
+    # Remove the row
+    @board.delete_at(row_index)
+
+    # Add a new row at the top of the board
+    @board.unshift(Array.new(@width, 0))
+  end
+
   def get_cell(x, y)
     check_cell!(x, y)
 

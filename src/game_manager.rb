@@ -5,13 +5,14 @@ require_relative 'shape'
 require_relative 'timer'
 
 class GameManager
-  attr_reader :board, :shape, :timer
+  attr_reader :board, :shape, :timer, :score, :speed
 
   def initialize()
     @board = Board.new(Configuration::BOARD_WIDTH, Configuration::BOARD_HEIGHT)
 
     @speed = Configuration::INITIAL_SPEED
     @timer = Timer.new(@speed)
+    @score = 0
 
     @exit = false
     @paused = false
@@ -22,7 +23,22 @@ class GameManager
   def update
     if not @paused
       shape_fall
+
+      squash_rows
     end
+  end
+
+  def squash_rows
+    squash_rows_count = 0
+
+    (0...@board.height).each { |row_index|
+      if @board.is_row_full?(row_index)
+        @board.squash_row(row_index)
+        squash_rows_count += 1
+      end
+    }
+
+    @score += squash_rows_count ** 2
   end
 
   def start

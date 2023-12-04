@@ -68,6 +68,7 @@ class Tetris
 
       render_board(@game_manager.board)
       render_shape(@game_manager.shape)
+      # render_panel
 
       if @game_manager.paused?
         change_color(:red_black)
@@ -129,6 +130,13 @@ class Tetris
         end
       end
     end
+  end
+
+  def render_panel
+    @win.setpos(24, 1)
+    change_color(:green_black)
+    @win.addstr("Score: #{@game_manager.score}")
+    change_color(:white_black)
   end
 
   def render_debug
