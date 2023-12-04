@@ -1,0 +1,3 @@
+# Použité GEMy
+- Curses
+- Rspec
