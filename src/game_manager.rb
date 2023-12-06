@@ -16,12 +16,13 @@ class GameManager
 
     @exit = false
     @paused = false
+    @game_over = false
 
     spawn_shape
   end
 
   def update
-    if not @paused
+    if not @paused and not @game_over
       shape_fall
 
       squash_rows
@@ -45,7 +46,7 @@ class GameManager
     @timer.start
   end
 
-  def running
+  def running?
     not @exit
   end
 
@@ -59,6 +60,10 @@ class GameManager
 
   def paused?
     @paused
+  end
+
+  def game_over?
+    @game_over
   end
 
   def move_shape( direction)
@@ -95,11 +100,17 @@ class GameManager
   end
 
   def spawn_shape()
-    @shape = Shape.random_shape(Vector.new(@board.width / 2, 0))
+    @shape = Shape.random_shape(Vector.new(@board.width / 2 - 1, 0))
 
     if @board.is_colliding?(@shape)
-      # TODO: game over
+      @game_over = true
     end
+  end
+
+  def game_over
+    @paused = false
+    @game_over = true
+    @timer.stop
   end
 
 end

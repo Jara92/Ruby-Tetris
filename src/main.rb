@@ -12,7 +12,7 @@ class Tetris
     Curses.curs_set(0) # Hide the cursor
     @win = Curses::Window.new(Configuration::SCREEN_HEIGHT, Configuration::SCREEN_WIDTH, 0, 0) # height comes first
     @win.timeout = 100 # Set a timeout for getch in milliseconds
-    @win.box('|', '-')
+    @win.box(Configuration::BOX_VERTICAL, Configuration::BOX_HORIZONTAL)
     @win.addstr(Configuration::TITLE)
 
     init_colors
@@ -55,7 +55,7 @@ class Tetris
   def run
     @game_manager.start
 
-    while @game_manager.running
+    while @game_manager.running?
       # Handle input and update the game
       handle_input
       @game_manager.update
@@ -63,18 +63,19 @@ class Tetris
       # Clear the screen and prepare for rendering
       @win.clear
 
-      @win.box('|', '-')
+      @win.box(Configuration::BOX_VERTICAL, Configuration::BOX_HORIZONTAL)
       @win.addstr(Configuration::TITLE)
 
       render_board(@game_manager.board)
       render_shape(@game_manager.shape)
-      # render_panel
+      render_panel
 
       if @game_manager.paused?
-        change_color(:red_black)
-        @win.setpos(@game_manager.board.height / 2, @game_manager.board.width / 2 - 2)
-        @win.addstr("PAUSED")
-        change_color(:white_black)
+        render_middle_screen_message("PAUSED")
+      end
+
+      if @game_manager.game_over?
+        render_middle_screen_message("GAME OVER")
       end
 
       #render_debug
@@ -114,7 +115,7 @@ class Tetris
           x = shape.position.x + column_index
           y = shape.position.y + row_index
 
-          @win.setpos(y + 1, x + 1) # Corrected order of arguments
+          @win.setpos(y + Configuration::SCREEN_PADDING_TOP, x + Configuration::SCREEN_PADDING_LEFT) # Corrected order of arguments
           @win.addch(Configuration::RENDER_CHARACTER)
         end
       end
@@ -125,7 +126,7 @@ class Tetris
     board.height.times do |y|
       board.width.times do |x|
         if board.cell_occupied?(x, y)
-          @win.setpos(y + 1, x + 1)
+          @win.setpos(y + Configuration::SCREEN_PADDING_TOP, x + Configuration::SCREEN_PADDING_LEFT)
           @win.addch(Configuration::RENDER_CHARACTER)
         end
       end
@@ -133,9 +134,24 @@ class Tetris
   end
 
   def render_panel
-    @win.setpos(24, 1)
+    @win.setpos(1, 2)
     change_color(:green_black)
     @win.addstr("Score: #{@game_manager.score}")
+    change_color(:white_black)
+
+    # render horizontal line
+    (1..Configuration::SCREEN_WIDTH - Configuration::SCREEN_PADDING_LEFT - 1).each do |col|
+      @win.setpos(Configuration::SCREEN_PADDING_TOP - 1, col)
+      @win.addch(Configuration::BOX_HORIZONTAL)
+    end
+  end
+
+  def render_middle_screen_message(message)
+    raise TypeError, "Message must be a string" unless message.is_a? String
+
+    change_color(:red_black)
+    @win.setpos(Configuration::SCREEN_HEIGHT / 2, Configuration::SCREEN_WIDTH / 2 - message.length / 2)
+    @win.addstr(message)
     change_color(:white_black)
   end
 
