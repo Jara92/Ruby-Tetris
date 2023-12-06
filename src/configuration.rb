@@ -10,7 +10,9 @@ module Configuration
   RENDER_CHARACTER = 'o'
   BOX_VERTICAL = '|'
   BOX_HORIZONTAL = '-'
-  INITIAL_SPEED = 0.4
-  SPEED_INCREMENT = 1.05
-  SPEEDUP_FACTOR = 1.5
+  FIRST_LEVEL_UP_SCORE = 5 # Score needed to reach level 2
+  SCORE_NEXT_LEVEL_FACTOR = 1.5 # Score for level n = FIRST_LEVEL_UP_SCORE * SCORE_NEXT_LEVEL_FACTOR^(n-2), n >= 2
+  INITIAL_SPEED = 0.4 # shape fall every 0.4 seconds
+  FALLING_SPEED_FACTOR = 0.95 # 5% faster every level
+  SPEEDUP_FACTOR = 1.5 # 50% faster when speedup
 end

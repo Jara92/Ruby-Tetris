@@ -5,14 +5,17 @@ require_relative 'shape'
 require_relative 'timer'
 
 class GameManager
-  attr_reader :board, :shape, :timer, :score, :speed
+  attr_reader :board, :shape, :timer, :score, :level, :speed
 
   def initialize()
     @board = Board.new(Configuration::BOARD_WIDTH, Configuration::BOARD_HEIGHT)
 
+    @level = 1
     @speed = Configuration::INITIAL_SPEED
     @timer = Timer.new(@speed)
+
     @score = 0
+    @score_for_next_level = Configuration::FIRST_LEVEL_UP_SCORE
 
     @exit = false
     @paused = false
@@ -39,7 +42,7 @@ class GameManager
       end
     }
 
-    @score += squash_rows_count ** 2
+    add_score(squash_rows_count ** 2)
   end
 
   def start
@@ -111,6 +114,24 @@ class GameManager
     @paused = false
     @game_over = true
     @timer.stop
+  end
+
+  def add_score(score)
+    @score += score
+
+    # Next level score reached?
+    if @score >= @score_for_next_level
+      # Level up
+      @level += 1
+
+      # Increase the speed by multiplying it with the factor
+      @speed *= Configuration::FALLING_SPEED_FACTOR
+      # Update the wait time of the timer
+      @timer.update_wait_time(@speed)
+
+      # Increase the score for the next level
+      @score_for_next_level *= Configuration::SCORE_NEXT_LEVEL_FACTOR
+    end
   end
 
 end

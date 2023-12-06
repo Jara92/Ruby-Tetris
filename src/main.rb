@@ -134,9 +134,13 @@ class Tetris
   end
 
   def render_panel
-    @win.setpos(1, 2)
     change_color(:green_black)
+    @win.setpos(1, 2)
     @win.addstr("Score: #{@game_manager.score}")
+
+    @win.setpos(2, 2)
+    @win.addstr("Level: #{@game_manager.level}")
+
     change_color(:white_black)
 
     # render horizontal line
