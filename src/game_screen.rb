@@ -32,6 +32,7 @@ class GameScreen < Screen
     end
   end
 
+  private
   def handle_input
     case @win.getch
     when 'w'

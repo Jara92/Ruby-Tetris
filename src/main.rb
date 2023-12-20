@@ -1,6 +1,5 @@
 require 'curses'
 require_relative 'configuration'
-require_relative 'game_screen'
 require_relative 'menu_screen'
 
 include Curses

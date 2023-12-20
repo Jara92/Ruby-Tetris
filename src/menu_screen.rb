@@ -1,9 +1,12 @@
 require_relative 'screen'
+require_relative 'score_manager'
+require_relative 'game_screen'
 
 class MenuScreen < Screen
   def initialize(window, colors)
     super
 
+    @score_manager = ScoreManager.instance
     @exit = false
   end
 
@@ -35,6 +38,8 @@ class MenuScreen < Screen
     # Open new game screen
     game_screen = GameScreen.new(@win, @colors)
     game_screen.run
+
+    # fixme: score is not updating
   end
 
   def exit_game
@@ -47,7 +52,8 @@ class MenuScreen < Screen
   end
 
   def render_top_score
-    # todo
+    @win.setpos(2, Configuration::SCREEN_PADDING_LEFT + 2)
+    @win.addstr("Top Score: #{@score_manager.get_top_score}")
   end
 
   def render_menu_options

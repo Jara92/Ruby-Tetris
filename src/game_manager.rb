@@ -3,6 +3,7 @@ require_relative 'vector'
 require_relative 'board'
 require_relative 'shape'
 require_relative 'timer'
+require_relative 'score_manager'
 
 class GameManager
   attr_reader :board, :shape, :timer, :score, :level, :speed
@@ -13,6 +14,7 @@ class GameManager
     @level = 1
     @speed = Configuration::INITIAL_SPEED
     @timer = Timer.new(@speed)
+    @score_manager = ScoreManager.instance
 
     @score = 0
     @score_for_next_level = Configuration::FIRST_LEVEL_UP_SCORE
@@ -55,6 +57,8 @@ class GameManager
 
   def exit
     @exit = true
+
+    update_top_score
   end
 
   def toggle_pause
@@ -113,6 +117,15 @@ class GameManager
     @paused = false
     @game_over = true
     @timer.stop
+
+    update_top_score
+
+  end
+
+  def update_top_score
+    if @score > @score_manager.get_top_score
+      @score_manager.save_top_score(@score)
+    end
   end
 
   def add_score(score)
