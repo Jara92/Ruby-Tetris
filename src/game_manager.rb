@@ -85,7 +85,6 @@ class GameManager
     end
   end
 
-  private
 
   def shape_fall
     if @timer.tick?
