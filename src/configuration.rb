@@ -19,7 +19,7 @@ module Configuration
 
   # ASCII cahracter to be used for rendering game objects
   # RENDER_CHARACTER = 'o'
-  RENDER_CHARACTER = 'o'
+  RENDER_CHARACTER = '#'
 
   # Box rendering characters
   BOX_VERTICAL = '|'

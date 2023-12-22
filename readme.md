@@ -4,7 +4,7 @@ Jaroslav Fikar (fikarja3@fit.cvut.cz)
 
 ## Zadání a popis
 
-Jedná se o remake klasické hry tetris.
+Jedná se o remake klasické hry Tetris.
 
 - Konzolové rozhraní (s použitím curses nebo podobné knihovny)
 - Hlavní menu a stránka s ovládáním hry
@@ -22,17 +22,24 @@ Jedná se o remake klasické hry tetris.
 ![Pozastavená hra](results/paused.png "Pozastavená hra")
 ![Game over](results/game_over.png "Game over screen")
 
-# Spuštění
+## Spuštění
 
 ```bash
 ./tetris.rb
 ```
+
+## Konfigurace
+
+Uživatel má možnost změnit některé parametry (např. velikost obrazovky, znak pro vykreslení hry...) hry v
+souboru [src/configuration.rb](src/configuration.rb).
 
 ## Ovládání
 
 W - rotace / orientace v menu
 
 S - zrychlené padání / orientace v menu
+
+ENTER - výběr položky v menu
 
 A - posun doleva
 

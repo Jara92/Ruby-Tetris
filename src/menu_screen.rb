@@ -10,7 +10,7 @@ class MenuScreen < Screen
 
   MENU_OPTIONS = [
     { "title" => "Start Game", "action" => :start_game },
-    { "title" => "Constrols", "action" => :controls },
+    { "title" => "Controls", "action" => :controls },
     { "title" => "Exit", "action" => :exit },
   ]
 
