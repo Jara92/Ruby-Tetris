@@ -6,8 +6,7 @@ class Screen
     @win = window
     @colors = colors
 
-    @game_manager = GameManager.new
-
+    @exit = false
   end
 
   def run
@@ -15,6 +14,10 @@ class Screen
   end
 
   private
+
+  def exit
+    @exit = true
+  end
 
   def clear_screen
     # Clear the screen and prepare for rendering

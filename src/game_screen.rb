@@ -3,6 +3,8 @@ require_relative 'screen'
 class GameScreen < Screen
   def initialize(window, colors)
     super
+
+    @game_manager = GameManager.new
   end
 
   def run
