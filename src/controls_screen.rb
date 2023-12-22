@@ -40,7 +40,7 @@ class ControlsScreen < Screen
     when 'q'
       exit
     else
-      # todo
+      # do nothing
     end
   end
 
