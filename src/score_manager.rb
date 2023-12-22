@@ -15,6 +15,7 @@ class ScoreManager
   end
 
   def save_top_score(score)
+    @top_score = score
     File.write(@filename, score)
   end
 

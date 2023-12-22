@@ -72,8 +72,6 @@ class MenuScreen < Screen
     # Open new game screen
     game_screen = GameScreen.new(@win, @colors)
     game_screen.run
-
-    # fixme: score is not updating
   end
 
   def controls
