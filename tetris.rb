@@ -1,6 +1,8 @@
+#!/usr/bin/env ruby
+
 require 'curses'
-require_relative 'configuration'
-require_relative 'menu_screen'
+require_relative 'src/configuration'
+require_relative 'src/menu_screen'
 
 include Curses
 
