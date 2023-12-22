@@ -23,11 +23,11 @@ class GameScreen < Screen
       render_panel
 
       if @game_manager.paused?
-        render_middle_screen_message("PAUSED")
+        render_middle_screen_message("PAUSED", :red_black)
       end
 
       if @game_manager.game_over?
-        render_middle_screen_message("GAME OVER")
+        render_game_over
       end
 
       # render_debug
@@ -57,9 +57,16 @@ class GameScreen < Screen
       @game_manager.add_score(1)
     when 'l'
       @game_manager.add_score(-1)
+    when 'r'
+      restart_game
     else
       # Nothing
     end
+  end
+
+  def restart_game
+    @game_manager = GameManager.new
+    @game_manager.start
   end
 
   def render_shape(shape)
@@ -106,13 +113,27 @@ class GameScreen < Screen
     end
   end
 
-  def render_middle_screen_message(message)
+  def render_middle_screen_message(message, color = :white_black, x = nil, y = nil)
     raise TypeError, "Message must be a string" unless message.is_a? String
 
-    change_color(:red_black)
-    @win.setpos(Configuration::SCREEN_HEIGHT / 2, Configuration::SCREEN_WIDTH / 2 - message.length / 2)
+    x ||= Configuration::SCREEN_HEIGHT / 2
+    y ||= Configuration::SCREEN_WIDTH / 2 - message.length / 2
+
+    change_color(color)
+    @win.setpos(x, y)
     @win.addstr(message)
+
+    # Reset color
     change_color(:white_black)
+  end
+
+  def render_game_over
+    # display game over message in the middle of the screen
+    render_middle_screen_message("GAME OVER", :red_black)
+
+    # display options in the middle of the screen below the game over message
+    render_middle_screen_message("Press R to restart", :green_black, y = Configuration::SCREEN_HEIGHT / 2 + 2)
+    render_middle_screen_message("Press Q to quit", :green_black, y = Configuration::SCREEN_HEIGHT / 2 + 3)
   end
 
   def render_debug
