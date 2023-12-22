@@ -1,3 +1,6 @@
+=begin
+vector class to represent a 2D coordinates
+=end
 class Vector
   attr_accessor :x, :y
 

@@ -1,13 +1,21 @@
 require_relative 'screen'
 
+=begin
+The Tetris game screen
+=end
 class GameScreen < Screen
   def initialize(window, colors)
     super
 
+    # Create a new game manager instance
     @game_manager = GameManager.new
   end
 
+  "" "
+  Run the game screen loop
+  " ""
   def run
+    # Start the game
     @game_manager.start
 
     while @game_manager.running?
@@ -18,23 +26,31 @@ class GameScreen < Screen
       # Clear the screen and prepare for rendering
       super
 
+      # Render game main components
       render_board(@game_manager.board)
       render_shape(@game_manager.shape)
       render_panel
 
+      # Render game paused message
       if @game_manager.paused?
         render_middle_screen_message("PAUSED", :red_black)
       end
 
+      # Render game over message
       if @game_manager.game_over?
         render_game_over
       end
 
+      # render debug info
       # render_debug
     end
   end
 
   private
+
+  "" "
+  handle game screen input
+  " ""
   def handle_input
     case @win.getch
     when 'w'
@@ -48,25 +64,31 @@ class GameScreen < Screen
       @game_manager.move_shape(Direction::RIGHT)
     when 'p'
       @game_manager.toggle_pause
+    when 'r'
+      restart_game
     when 'q'
       @game_manager.exit
-      # Cheat engine
+      # Cheat engine options
     when 'o'
       @game_manager.add_score(1)
     when 'l'
       @game_manager.add_score(-1)
-    when 'r'
-      restart_game
     else
       # Nothing
     end
   end
 
+  "" "
+  Restart the game by creating a new game manager instance
+  " ""
   def restart_game
     @game_manager = GameManager.new
     @game_manager.start
   end
 
+  "" "
+  Render current shape in the board
+  " ""
   def render_shape(shape)
     shape.layout.each_with_index do |row, row_index|
       row.each_with_index do |cell, column_index|
@@ -83,6 +105,9 @@ class GameScreen < Screen
     end
   end
 
+  "" "
+  Render the board cells
+  " ""
   def render_board(board)
     board.height.times do |y|
       board.width.times do |x|
@@ -94,6 +119,9 @@ class GameScreen < Screen
     end
   end
 
+  "" "
+  Render the game panel
+  " ""
   def render_panel
     change_color(:green_black)
     @win.setpos(1, 2)
@@ -111,9 +139,15 @@ class GameScreen < Screen
     end
   end
 
+  "" "
+  Render a message in the middle of the screen
+  X and Y (optional) are the coordinates of the top left corner of the message
+  " ""
   def render_middle_screen_message(message, color = :white_black, x = nil, y = nil)
     raise TypeError, "Message must be a string" unless message.is_a? String
+    raise TypeError, "Color must be a valid color" unless @colors.key?(color)
 
+    # Default values for x and y are the middle of the screen
     x ||= Configuration::SCREEN_HEIGHT / 2
     y ||= Configuration::SCREEN_WIDTH / 2 - message.length / 2
 
@@ -125,6 +159,9 @@ class GameScreen < Screen
     change_color(:white_black)
   end
 
+  "" "
+  Render the game over message and options
+  " ""
   def render_game_over
     # display game over message in the middle of the screen
     render_middle_screen_message("GAME OVER", :red_black)
@@ -134,6 +171,9 @@ class GameScreen < Screen
     render_middle_screen_message("Press Q to quit", :green_black, y = Configuration::SCREEN_HEIGHT / 2 + 3)
   end
 
+  "" "
+  Render debug info
+  " ""
   def render_debug
     @win.setpos(15, 1)
     @win.addstr("Speed: #{@speed}")

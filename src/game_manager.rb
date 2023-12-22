@@ -38,7 +38,7 @@ class GameManager
     squash_rows_count = 0
 
     (0...@board.height).each { |row_index|
-      if @board.is_row_full?(row_index)
+      if @board.row_full?(row_index)
         @board.squash_row(row_index)
         squash_rows_count += 1
       end
@@ -92,11 +92,11 @@ class GameManager
 
   def shape_fall
     if @timer.tick?
-      @timer.update_wait_time(@speed)
+      @timer.change_wait_time(@speed)
       @timer.reset
 
       moved_shape = @shape.move(Direction::BOTTOM)
-      if @board.is_colliding?(moved_shape)
+      if @board.colliding?(moved_shape)
         @board.add_shape(@shape)
         spawn_shape
       else
@@ -108,7 +108,7 @@ class GameManager
   def spawn_shape()
     @shape = Shape.random_shape(Vector.new(@board.width / 2 - 1, 0))
 
-    if @board.is_colliding?(@shape)
+    if @board.colliding?(@shape)
       @game_over = true
     end
   end
@@ -139,7 +139,7 @@ class GameManager
       # Increase the speed by multiplying it with the factor
       @speed *= Configuration::FALLING_SPEED_FACTOR
       # Update the wait time of the timer
-      @timer.update_wait_time(@speed)
+      @timer.change_wait_time(@speed)
 
       # Increase the score for the next level
       @score_for_next_level *= Configuration::SCORE_NEXT_LEVEL_FACTOR

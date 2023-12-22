@@ -10,6 +10,9 @@ class Tetris
     init_curses
   end
 
+  "" "
+  Init curses librabry and create a window
+  " ""
   def init_curses
     Curses.init_screen
     Curses.curs_set(0) # Hide the cursor
@@ -41,8 +44,11 @@ class Tetris
     end
   end
 
+  "" "
+  Run the game
+  " ""
   def run
-    # screen = GameScreen.new(@win, @colors)
+    # Run the menu screen
     screen = MenuScreen.new(@win, @colors)
     screen.run
 
@@ -51,4 +57,5 @@ class Tetris
 
 end
 
+# Create a new instance and run
 Tetris.new.run

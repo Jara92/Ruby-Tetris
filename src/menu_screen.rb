@@ -3,6 +3,9 @@ require_relative 'score_manager'
 require_relative 'game_screen'
 require_relative 'controls_screen'
 
+=begin
+Menu screen for the game
+=end
 class MenuScreen < Screen
 
   MENU_OPTIONS = [
@@ -14,24 +17,33 @@ class MenuScreen < Screen
   def initialize(window, colors)
     super
 
+    # Get the score manager instance
     @score_manager = ScoreManager.instance
-    @exit = false
+
+    # Set the active menu option
     @active_option = 0
   end
 
+  "" "
+  Run the menu screen loop
+  " ""
   def run
     until @exit
+      # handle input and refresh the screen
       handle_menu_input
-
       super
 
-      render_constrols
+      # render the menu
+      render_menu
 
     end
   end
 
   private
 
+  "" "
+  Handle menu input
+  " ""
   def handle_menu_input
     case @win.getch
     when 's'
@@ -47,14 +59,23 @@ class MenuScreen < Screen
     end
   end
 
+  "" "
+  Move the active menu option down
+  " ""
   def next_option
     @active_option = (@active_option + 1) % MENU_OPTIONS.length
   end
 
+  "" "
+  Move the active menu option up
+  " ""
   def previous_option
     @active_option = (@active_option - 1) % MENU_OPTIONS.length
   end
 
+  "" "
+  Perform the action of the active menu option
+  " ""
   def perform_menu_option
     case MENU_OPTIONS[@active_option]["action"]
     when :start_game
@@ -68,22 +89,35 @@ class MenuScreen < Screen
     end
   end
 
+  "" "
+  Start a new game
+  " ""
   def start_game
     # Open new game screen
     game_screen = GameScreen.new(@win, @colors)
     game_screen.run
   end
 
+  "" "
+  Open the controls screen
+  " ""
   def controls
     controls_screen = ControlsScreen.new(@win, @colors)
     controls_screen.run
   end
 
-  def render_constrols
+  "" "
+  Render the menu screen
+  " ""
+
+  def render_menu
     render_top_score
     render_menu_options
   end
 
+  "" "
+  Render the top score
+  " ""
   def render_top_score
     change_color(:green_black)
 
@@ -94,6 +128,9 @@ class MenuScreen < Screen
     change_color(:white_black)
   end
 
+  "" "
+  Render the menu options
+  " ""
   def render_menu_options
     MENU_OPTIONS.each_with_index do |option, index|
       # Active menu item color

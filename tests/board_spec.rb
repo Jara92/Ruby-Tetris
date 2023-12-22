@@ -33,35 +33,35 @@ describe Board do
       shape = Shape.new(Vector.new(0, 0), shape_layout)
 
       # The shape is not colliding with the board
-      expect(board.is_colliding?(shape)).to eq(true)
+      expect(board.colliding?(shape)).to eq(true)
 
       # Move the shape to the right 2times
       shape = Shape.new(Vector.new(2, 0), shape_layout)
-      expect(board.is_colliding?(shape)).to eq(false)
+      expect(board.colliding?(shape)).to eq(false)
 
       # Move the shape
       shape = Shape.new(Vector.new(3, 4), shape_layout)
-      expect(board.is_colliding?(shape)).to eq(true)
+      expect(board.colliding?(shape)).to eq(true)
 
       # Move the shape
       shape = Shape.new(Vector.new(0, 1), shape_layout)
-      expect(board.is_colliding?(shape)).to eq(true)
+      expect(board.colliding?(shape)).to eq(true)
 
       # The shape may be outside of the board but the collision must be false and no error should be raised
       shape = Shape.new(Vector.new(-5, -6), shape_layout)
-      expect(board.is_colliding?(shape)).to eq(false)
+      expect(board.colliding?(shape)).to eq(false)
 
       # The shape may be outside of the board but the collision must be false and no error should be raised
       shape = Shape.new(Vector.new(30, 10), shape_layout)
-      expect(board.is_colliding?(shape)).to eq(false)
+      expect(board.colliding?(shape)).to eq(false)
 
       # Shape above the ground - no collision
       shape = Shape.new(Vector.new(0, 24), shape_layout)
-      expect(board.is_colliding?(shape)).to eq(false)
+      expect(board.colliding?(shape)).to eq(false)
 
       # Ground collision detection - shape colliding or under the board is considered as collision
       shape = Shape.new(Vector.new(0, 25), shape_layout)
-      expect(board.is_colliding?(shape)).to eq(true)
+      expect(board.colliding?(shape)).to eq(true)
     end
 
     # TODO: test when roration is involved
@@ -77,19 +77,19 @@ describe Board do
       shape = Shape.new(Vector.new(0, 0), shape_layout)
 
       # The shape is not out of the board
-      expect(board.is_out_off_board(shape)).to eq(false)
+      expect(board.out_off_board?(shape)).to eq(false)
 
       # Move the shape to the right 2times
       shape = Shape.new(Vector.new(2, 0), shape_layout)
-      expect(board.is_out_off_board(shape)).to eq(false)
+      expect(board.out_off_board?(shape)).to eq(false)
 
       # Move the shape
       shape = Shape.new(Vector.new(16, 0), shape_layout)
-      expect(board.is_out_off_board(shape)).to eq(false)
+      expect(board.out_off_board?(shape)).to eq(false)
 
       # Move the shape to index 17 - the shape is out of the board partially
       shape = Shape.new(Vector.new(17, 0), shape_layout)
-      expect(board.is_out_off_board(shape)).to eq(true)
+      expect(board.out_off_board?(shape)).to eq(true)
     end
 
     it 'returns true if the shape is out of the board' do
@@ -101,19 +101,19 @@ describe Board do
       shape = Shape.new(Vector.new(0, 0), shape_layout)
 
       # The shape is not out of the board
-      expect(board.is_out_off_board(shape)).to eq(false)
+      expect(board.out_off_board?(shape)).to eq(false)
 
       # Move the shape to the bottom 2times
       shape = Shape.new(Vector.new(0, 2), shape_layout)
-      expect(board.is_out_off_board(shape)).to eq(false)
+      expect(board.out_off_board?(shape)).to eq(false)
 
       # Move the shape
       shape = Shape.new(Vector.new(0, 21), shape_layout)
-      expect(board.is_out_off_board(shape)).to eq(false)
+      expect(board.out_off_board?(shape)).to eq(false)
 
       # Move the shape to index 22 - the shape is out of the board partially
       shape = Shape.new(Vector.new(0, 22), shape_layout)
-      expect(board.is_out_off_board(shape)).to eq(true)
+      expect(board.out_off_board?(shape)).to eq(true)
     end
   end
 end
