@@ -30,7 +30,7 @@ Jedná se o remake klasické hry Tetris.
 
 ## Konfigurace
 
-Uživatel má možnost změnit některé parametry (např. velikost obrazovky, znak pro vykreslení hry...) hry v
+Uživatel má možnost změnit některé parametry hry (např. velikost obrazovky, znak pro vykreslení hry...) v
 souboru [src/configuration.rb](src/configuration.rb).
 
 ## Ovládání
