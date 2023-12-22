@@ -8,8 +8,8 @@ class ScoreManager
   # There is only one instance of the score manager
   include Singleton
 
-  def initialize(filename = "data/top_score.txt")
-    @filename = filename
+  def initialize()
+    @filename = "data/top_score.txt"
 
     # Load the top score from the file
     load_top_score
@@ -27,19 +27,28 @@ class ScoreManager
     File.write(@filename, score)
   end
 
+  "" "
+  Change the file name and load the top score from the new file
+  " ""
+
+  def change_file_name!(new_file_name)
+    @filename = new_file_name
+    load_top_score
+  end
+
   private
 
   "" "
   Load the top score from the file
   " ""
   def load_top_score
+    # default top score is 0
+    @top_score = 0
+
     # Load the top score from the file if it exists
     if File.exist?(@filename)
       @top_score = File.read(@filename).to_i
     end
-
-    # Set the top score to 0 if it is not set
-    @top_score ||= 0
   end
 
 end
