@@ -46,8 +46,6 @@ class GameScreen < Screen
       @game_manager.move_shape(Direction::LEFT)
     when 'd'
       @game_manager.move_shape(Direction::RIGHT)
-    when 'r'
-      @game_manager.rotate_shape
     when 'p'
       @game_manager.toggle_pause
     when 'q'
