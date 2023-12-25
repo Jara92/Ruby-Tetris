@@ -3,7 +3,7 @@ require 'rspec'
 require_relative '../src/shape'
 
 describe Shape do
-  describe '#rotate' do
+  describe 'rotate' do
     it 'simulates rotation of the shape' do
       shape = Shape.new(Vector.new(0, 0), [[1, 1, 1, 1]])
       rotated_shape = shape.rotate
@@ -37,7 +37,7 @@ describe Shape do
     end
   end
 
-  describe '#move' do
+  describe 'move' do
     it 'simulates movement of the shape in X direction' do
       shape = Shape.new(Vector.new(0, 0), [[1, 1, 1, 1]])
 
@@ -55,7 +55,7 @@ describe Shape do
     end
   end
 
-  describe '#move' do
+  describe 'move' do
     it 'simulates movement of the shape in Y direction' do
       shape = Shape.new(Vector.new(0, 0), [[1, 1, 1, 1]])
 
@@ -73,7 +73,7 @@ describe Shape do
     end
   end
 
-  describe '#move!' do
+  describe 'move!' do
     it 'moves the shape in X direction' do
       shape = Shape.new(Vector.new(0, 0), [[1, 1, 1, 1]])
 
@@ -91,7 +91,7 @@ describe Shape do
     end
   end
 
-  describe '#move!' do
+  describe 'move!' do
     it 'moves the shape in Y direction' do
       shape = Shape.new(Vector.new(0, 0), [[1, 1, 1, 1]])
 
